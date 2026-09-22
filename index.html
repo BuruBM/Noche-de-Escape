@@ -523,10 +523,11 @@ function renderRoom3(){
   if(isTerminal){
     html += `<p>Tus pistas:</p>
     <div class="light-panel">
-    <div class="clue-box">🎧 Los Redondos suena en el segundo turno.</div>
-    <div class="clue-box">🎧 El vinilo esmeralda es el de Los Redondos.</div>
-    <div class="clue-box">🎧 Sumo cierra la noche.</div>
-    <p>Armá acá el orden y el color de cada bandeja (tu pareja tiene otras cuatro pistas):</p>
+    <div class="clue-box">🎧 Los Redondos cierran la noche.</div>
+    <div class="clue-box">🎧 El vinilo de Los Redondos es cobre.</div>
+    <div class="clue-box">🎧 Arctic Monkeys no suena ni segundo ni último.</div>
+    <div class="clue-box">🎧 Sumo no tiene ni el vinilo cobre ni el amarillo.</div>
+    <p>Armá acá el orden y el color de cada bandeja (tu pareja tiene otras cuatro pistas, distintas):</p>
     <div class="slot-grid">
       ${[0,1,2,3].map(i=>`<div class="grid-slot">
         <label>💿 Bandeja ${i+1}</label>
@@ -537,26 +538,26 @@ function renderRoom3(){
     <button class="btn primary" onclick="checkRoom3()">Verificar bandeja</button>
     <div id="r3-feedback"></div></div>`;
   } else {
-    html += `<p>Tus pistas (tu pareja tiene otras tres y arma el orden completo en su pantalla):</p>
+    html += `<p>Tus pistas (tu pareja tiene otras cuatro, distintas, y arma el orden completo en su pantalla):</p>
     <div class="light-panel">
-    <div class="clue-box copper">🎸 El primer tema de la noche tiene el vinilo cobre.</div>
+    <div class="clue-box copper">🎸 El vinilo esmeralda no está ni primero ni último.</div>
+    <div class="clue-box copper">🎸 The Strokes suena inmediatamente después de Arctic Monkeys.</div>
+    <div class="clue-box copper">🎸 Sumo no tiene el vinilo madera.</div>
     <div class="clue-box copper">🎸 Arctic Monkeys no tiene el vinilo amarillo.</div>
-    <div class="clue-box copper">🎸 El vinilo madera suena antes que el vinilo amarillo.</div>
-    <div class="clue-box copper">🎸 The Strokes suena antes que Arctic Monkeys.</div>
     </div>`;
   }
 
   html += roomHintsHtml(3, [
-    'Sumo va en la bandeja 4, y Los Redondos en la 2 — eso deja las bandejas 1 y 3 para The Strokes y Arctic Monkeys, en ese orden.',
-    'El color de la bandeja 1 es cobre, y el de Los Redondos es esmeralda. Con eso y el orden madera-antes-que-amarillo, quedan solo dos colores por ubicar.'
-  ], 'Bandeja 1: The Strokes (cobre) · Bandeja 2: Los Redondos (esmeralda) · Bandeja 3: Arctic Monkeys (madera) · Bandeja 4: Sumo (amarillo)');
+    'Ninguna pista dice una posición o un color de forma directa salvo la de Los Redondos — todo lo demás sale de cruzar negaciones. Anoten en un papel las 4 bandejas y vayan tachando bandas y colores imposibles en cada una.',
+    'Sumo no puede tener cobre, amarillo ni madera — así que ya sabés su color sin que nadie te lo diga. Con eso y The Strokes pegado justo después de Arctic Monkeys, quedan muy pocas combinaciones posibles para probar.'
+  ], 'Bandeja 1: Arctic Monkeys (madera) · Bandeja 2: The Strokes (amarillo) · Bandeja 3: Sumo (esmeralda) · Bandeja 4: Los Redondos (cobre)');
 
   html += `<button class="btn ghost" onclick="goRoom(4)">Saltar a la ronda 4</button></div>`;
   document.getElementById('screen-room3').innerHTML = html;
 }
 function checkRoom3(){
-  const targetBand = ['S','R','A','U'];
-  const targetColor = [1,0,3,2];
+  const targetBand = ['A','S','U','R'];
+  const targetColor = [3,2,0,1];
   const valBand = [0,1,2,3].map(i=>document.getElementById('r3-band'+i).value);
   const valColor = [0,1,2,3].map(i=>document.getElementById('r3-color'+i).value);
   const fb = document.getElementById('r3-feedback');
@@ -647,7 +648,7 @@ function renderRoom5(){
   let html = `<div class="card acc-emerald">
     <div class="kicker">⭐ Ronda 5 · La Constelación</div>
     <h2>Dieciséis estrellas, dos mitades del mismo cielo</h2>
-    <p class="room-sub">Cada uno ve la mitad del cielo. Solo se completa entera contándosela al otro — los dos arman su tablero al mismo tiempo.</p>
+    <p class="room-sub">Cada uno ve la mitad del cielo — pero no se ve igual desde los dos lugares. Solo se completa entera contándosela al otro y traduciendo el color.</p>
     ${symmetricBanner()}
     <div class="timer-box">
       <div class="timer-label">⏳ tiempo sugerido</div>
@@ -655,7 +656,7 @@ function renderRoom5(){
       <button class="btn accent" onclick="startTimer('r5',10,'r5-timer','r5-expire')">Iniciar cronómetro</button>
       <p class="hidden note" id="r5-expire">Se acabó el tiempo sugerido — sigan si quieren.</p>
     </div>
-    <p>Las casillas doradas son las tuyas: describilas. Las claras son las que tenés que completar escuchando a tu pareja.</p>
+    <p>Las casillas doradas son las tuyas: describilas tal cual las ves. Las claras son las que tenés que completar escuchando a tu pareja — pero el color que te digan no va tal cual: se corre un lugar en la rueda (esmeralda→cobre→amarillo→madera→esmeralda). El ícono sí es el mismo.</p>
     <div class="light-panel"><div class="constellation">
       ${[...Array(16).keys()].map(i=>{
         if(myGiven.has(i)){
@@ -673,9 +674,9 @@ function renderRoom5(){
     <div id="r5-feedback"></div></div>`;
 
   html += roomHintsHtml(5, [
-    'Empiecen por las esquinas y los bordes del tablero: son más fáciles de ubicar sin confundirse de casilla.',
-    'Si aparece el mismo ícono más de una vez, aclaren siempre el color — es lo que los distingue.'
-  ], 'Tu mitad de la constelación ya la tenés en pantalla; la otra mitad se arma completando lo que te cuenta tu pareja, casilla por casilla.');
+    'La rueda de colores es: esmeralda → cobre → amarillo → madera → esmeralda. Si tu pareja te dice "amarillo", vos ponés "madera" — el que sigue en la rueda, no el que te dijeron.',
+    'Empiecen por las esquinas y los bordes del tablero para no perderse de casilla, y digan siempre ícono y color juntos — nunca uno solo.'
+  ], 'Tu mitad de la constelación ya la tenés en pantalla, tal cual. La otra mitad se arma con lo que te cuenta tu pareja, pero corriendo el color un lugar en la rueda (esmeralda→cobre→amarillo→madera→esmeralda); el ícono no cambia.');
 
   html += `<button class="btn ghost" onclick="goFinal()">Saltar al cierre</button></div>`;
   document.getElementById('screen-room5').innerHTML = html;
@@ -687,7 +688,8 @@ function checkRoom5(){
     if(myGiven.has(i)) continue;
     const ic = document.getElementById('r5-icon'+i).value;
     const co = document.getElementById('r5-color'+i).value;
-    if(ic==='' || co==='' || parseInt(ic)!==full[i].icon || parseInt(co)!==full[i].color){ ok=false; break; }
+    const expectedColor = (full[i].color+1)%4;
+    if(ic==='' || co==='' || parseInt(ic)!==full[i].icon || parseInt(co)!==expectedColor){ ok=false; break; }
   }
   const fb = document.getElementById('r5-feedback');
   if(ok){
