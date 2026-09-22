@@ -41,6 +41,28 @@ body{
 .card.acc-emerald{border-top-color:var(--emerald); box-shadow:0 1px 2px rgba(0,0,0,.5), 0 14px 32px rgba(0,0,0,.4), 0 -22px 44px -28px var(--emerald-dim);}
 .card.acc-gold{border-top-color:var(--gold);}
 .card.acc-wood{border-top-color:var(--wood);}
+.light-panel{
+  background:linear-gradient(165deg,#fbf1de,#f3e0bb);
+  color:#2b2015; border-radius:14px; padding:18px 16px; margin:16px 0;
+  box-shadow:0 12px 28px rgba(0,0,0,.4), 0 2px 8px rgba(0,0,0,.22);
+  border:1px solid rgba(0,0,0,.06);
+}
+.light-panel p{color:#2b2015;}
+.light-panel .note{color:#7a6a52;}
+.light-panel .symbol-card{background:#fffaf0; border:1px solid rgba(0,0,0,.1); box-shadow:0 2px 6px rgba(0,0,0,.08);}
+.light-panel .symbol-card .drink{color:#2b2015;}
+.light-panel .symbol-card .attr{color:#7a6a52;}
+.light-panel table th{color:#7a6a52; border-bottom-color:rgba(0,0,0,.22);}
+.light-panel table td{color:#2b2015; border-bottom-color:rgba(0,0,0,.1);}
+.light-panel .dish-btn{background:#fffaf0; border-color:rgba(0,0,0,.15); color:#2b2015;}
+.light-panel .sequence-display{background:#fffaf0; color:#a5601f; border-color:rgba(0,0,0,.1);}
+.light-panel .clue-box{background:#fffaf0; color:#2b2015; box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.light-panel .grid-slot{background:#fffaf0; border-color:rgba(0,0,0,.15);}
+.light-panel .grid-slot label{color:#7a6a52;}
+.light-panel select{background:#fffaf0; color:#2b2015; border-color:rgba(0,0,0,.2);}
+.light-panel .window-slot .idx{color:#7a6a52;}
+.light-panel .const-cell{background:#fffaf0; border-color:rgba(0,0,0,.14);}
+.light-panel .const-cell.given{background:#ffe9bd; border-color:var(--copper);}
 .kicker{
   text-transform:uppercase; letter-spacing:2.5px; font-size:.78em; font-weight:800; color:var(--glow);
   margin-bottom:6px; text-shadow:0 0 16px rgba(255,221,158,.4);
@@ -364,7 +386,7 @@ function renderRoom1(){
 
   if(isTerminal){
     html += `<p>Describí cada símbolo (trago, borde, medida) para que tu pareja busque el dígito exacto en su tabla.</p>
-    <div class="symbol-grid">`;
+    <div class="light-panel"><div class="symbol-grid">`;
     data.slots.forEach(s=>{
       const cname = COLOR_NAMES[s.c];
       html += `<div class="symbol-card">
@@ -378,12 +400,12 @@ function renderRoom1(){
     html += `</div>
     <div class="digit-inputs">${[0,1,2,3,4].map(i=>`<input type="text" maxlength="1" id="r1-d${i}">`).join('')}</div>
     <button class="btn primary" onclick="checkRoom1('${data.solution}')">Verificar código</button>
-    <div id="r1-feedback"></div>`;
+    <div id="r1-feedback"></div></div>`;
   } else {
     html += `<p>Tu pareja ve símbolos con tres datos: trago, borde y medida. Buscá la fila exacta (los tres tienen que coincidir) y decile el dígito.</p>
-    <table><tr><th>Trago</th><th>Borde</th><th>Medida</th><th>Dígito</th></tr>
+    <div class="light-panel"><table><tr><th>Trago</th><th>Borde</th><th>Medida</th><th>Dígito</th></tr>
     ${data.rows.map(r=>`<tr><td>${data.drinks[r.d].emoji} ${data.drinks[r.d].name}</td><td>${COLOR_NAMES[r.c]}</td><td>${data.medidas[r.m]}</td><td>${r.digit}</td></tr>`).join('')}
-    </table>`;
+    </table></div>`;
   }
 
   html += roomHintsHtml(1, [
@@ -429,22 +451,24 @@ function renderRoom2(){
 
   if(isTerminal){
     html += `<p>Presioná los platos en el orden que te diga tu pareja.</p>
-    <div class="dish-buttons">
+    <div class="light-panel"><div class="dish-buttons">
       ${displayOrder.map(k=>{const d=dishes.find(x=>x.key===k); return `<button class="dish-btn" id="r2-btn-${k}" onclick="pickDish2('${k}')">${d.emoji} ${d.name}</button>`;}).join('')}
     </div>
     <div class="sequence-display" id="r2-seq">—</div>
     <button class="btn ghost" onclick="undoDish2()">Deshacer último</button>
     <button class="btn primary" onclick="checkRoom2('${solutionOrder.join('')}')">Verificar orden</button>
-    <div id="r2-feedback"></div>`;
+    <div id="r2-feedback"></div></div>`;
   } else {
     html += `<p>Pistas del orden de la noche (tu pareja no las ve, solo tiene los platos):</p>
+    <div class="light-panel">
     <div class="clue-box">🍮 El postre cierra la noche.</div>
     <div class="clue-box">🧀 La provoleta es lo primero que sale, antes que cualquier otra cosa.</div>
     <div class="clue-box">🥗 Entre la provoleta y la ensalada no hay nada más.</div>
     <div class="clue-box">🍕 Entre la ensalada y la pizza no hay ningún otro plato.</div>
     <div class="clue-box">🥟 Las empanadas se sirven después de la pizza y antes de las pastas rellenas.</div>
     <div class="clue-box">🍝 Las pastas rellenas van inmediatamente después de las empanadas.</div>
-    <div class="clue-box">🥔 La tortilla de papas va inmediatamente después de las pastas rellenas.</div>`;
+    <div class="clue-box">🥔 La tortilla de papas va inmediatamente después de las pastas rellenas.</div>
+    </div>`;
   }
 
   html += roomHintsHtml(2, [
@@ -498,6 +522,7 @@ function renderRoom3(){
 
   if(isTerminal){
     html += `<p>Tus pistas:</p>
+    <div class="light-panel">
     <div class="clue-box">🎧 Los Redondos suena en el segundo turno.</div>
     <div class="clue-box">🎧 El vinilo esmeralda es el de Los Redondos.</div>
     <div class="clue-box">🎧 Sumo cierra la noche.</div>
@@ -510,13 +535,15 @@ function renderRoom3(){
       </div>`).join('')}
     </div>
     <button class="btn primary" onclick="checkRoom3()">Verificar bandeja</button>
-    <div id="r3-feedback"></div>`;
+    <div id="r3-feedback"></div></div>`;
   } else {
     html += `<p>Tus pistas (tu pareja tiene otras tres y arma el orden completo en su pantalla):</p>
+    <div class="light-panel">
     <div class="clue-box copper">🎸 El primer tema de la noche tiene el vinilo cobre.</div>
     <div class="clue-box copper">🎸 Arctic Monkeys no tiene el vinilo amarillo.</div>
     <div class="clue-box copper">🎸 El vinilo madera suena antes que el vinilo amarillo.</div>
-    <div class="clue-box copper">🎸 The Strokes suena antes que Arctic Monkeys.</div>`;
+    <div class="clue-box copper">🎸 The Strokes suena antes que Arctic Monkeys.</div>
+    </div>`;
   }
 
   html += roomHintsHtml(3, [
@@ -561,17 +588,17 @@ function renderRoom4(){
 
   if(isGlass){
     html += `<p>Este es tu lado del vidrio empañado. Describí, posición por posición, qué figura hay y de qué color.</p>
-    <div class="slot-grid">
+    <div class="light-panel"><div class="slot-grid">
       ${[...Array(11).keys()].map(i=>{
         const idx = data.chosen.indexOf(i);
         const cell = idx>=0 ? data.cells[idx] : null;
         return `<div class="window-slot">${iconBadge(cell?cell.icon:null, cell?cell.color:null, 40, WINDOW_ICONS)}<span class="idx">${i+1}</span></div>`;
       }).join('')}
     </div>
-    <p class="note">Íconos posibles: 💧 gota · ✈️ avión · 📸 cámara · ✨ luces · 🌙 luna. Colores: esmeralda, cobre, amarillo, madera.</p>`;
+    <p class="note">Íconos posibles: 💧 gota · ✈️ avión · 📸 cámara · ✨ luces · 🌙 luna. Colores: esmeralda, cobre, amarillo, madera.</p></div>`;
   } else {
     html += `<p>Este es tu lado sano. La regla del vidrio: la posición se invierte, y el color cambia — esmeralda y cobre se intercambian entre sí, y lo mismo pasa entre amarillo y madera. El ícono no cambia. Escuchá y completá.</p>
-    <div class="slot-grid">
+    <div class="light-panel"><div class="slot-grid">
       ${[...Array(11).keys()].map(i=>`<div class="grid-slot" style="min-width:92px;">
         <label>${i+1}</label>
         <select id="r4-icon${i}"><option value="">—</option>${WINDOW_ICONS.map((e,ei)=>`<option value="${ei}">${e}</option>`).join('')}</select>
@@ -579,7 +606,7 @@ function renderRoom4(){
       </div>`).join('')}
     </div>
     <button class="btn primary" onclick='checkRoom4(${JSON.stringify(data.target)})'>Verificar vidrio</button>
-    <div id="r4-feedback"></div>`;
+    <div id="r4-feedback"></div></div>`;
   }
 
   html += roomHintsHtml(4, [
@@ -628,8 +655,8 @@ function renderRoom5(){
       <button class="btn accent" onclick="startTimer('r5',10,'r5-timer','r5-expire')">Iniciar cronómetro</button>
       <p class="hidden note" id="r5-expire">Se acabó el tiempo sugerido — sigan si quieren.</p>
     </div>
-    <p>Las casillas doradas son las tuyas: describilas. Las grises son las que tenés que completar escuchando a tu pareja.</p>
-    <div class="constellation">
+    <p>Las casillas doradas son las tuyas: describilas. Las claras son las que tenés que completar escuchando a tu pareja.</p>
+    <div class="light-panel"><div class="constellation">
       ${[...Array(16).keys()].map(i=>{
         if(myGiven.has(i)){
           const c = data.full[i];
@@ -643,7 +670,7 @@ function renderRoom5(){
     </div>
     <p class="note">Íconos: 🐱 gato · ✈️ avión · 🍷 vino · 📸 cámara · 🎵 música · 📖 libro · 🧳 valija · ❤️ corazón.</p>
     <button class="btn primary" onclick="checkRoom5()">Verificar mi cielo</button>
-    <div id="r5-feedback"></div>`;
+    <div id="r5-feedback"></div></div>`;
 
   html += roomHintsHtml(5, [
     'Empiecen por las esquinas y los bordes del tablero: son más fáciles de ubicar sin confundirse de casilla.',
