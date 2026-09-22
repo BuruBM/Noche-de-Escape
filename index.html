@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Noche del Espejo</title>
+<style>
+:root{
+  --emerald:#0e6b4f;
+  --emerald-light:#1c9c74;
+  --copper:#b5651d;
+  --copper-light:#d98a4a;
+  --gold:#e8b923;
+  --wood:#5c3a21;
+  --wood-dark:#2b1b10;
+  --cream:#f4ead9;
+  --ink:#241608;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:'Georgia','Times New Roman',serif;
+  background:radial-gradient(circle at 20% 20%, #163d2c 0%, var(--wood-dark) 55%, #180f09 100%);
+  color:var(--cream);
+  padding:16px;
+}
+.container{
+  max-width:640px;
+  margin:0 auto;
+}
+.card{
+  background:var(--cream);
+  color:var(--ink);
+  border:3px solid var(--wood);
+  border-radius:14px;
+  padding:22px;
+  margin-bottom:16px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.4);
+}
+h1{
+  font-size:1.6em;
+  color:var(--gold);
+  text-shadow:0 2px 4px rgba(0,0,0,0.6);
+  text-align:center;
+  margin:12px 0 4px;
+}
+h2{
+  color:var(--emerald);
+  border-bottom:2px solid var(--copper-light);
+  padding-bottom:6px;
+  margin-top:0;
+}
+.subtitle{
+  text-align:center;
+  color:var(--copper-light);
+  margin-bottom:18px;
+  font-style:italic;
+}
+p{line-height:1.5;}
+.btn{
+  display:inline-block;
+  background:var(--emerald);
+  color:var(--cream);
+  border:none;
+  padding:12px 18px;
+  border-radius:8px;
+  font-size:1em;
+  font-family:inherit;
+  cursor:pointer;
+  margin:6px 6px 6px 0;
+  transition:transform .1s;
+}
+.btn:hover{transform:translateY(-1px); background:var(--emerald-light);}
+.btn.copper{background:var(--copper);}
+.btn.copper:hover{background:var(--copper-light);}
+.btn.gold{background:var(--gold); color:var(--ink); font-weight:bold;}
+.btn.wood{background:var(--wood);}
+.btn:disabled{opacity:.4; cursor:not-allowed;}
+input[type=text]{
+  font-family:inherit;
+  padding:10px;
+  border-radius:6px;
+  border:2px solid var(--wood);
+  font-size:1.1em;
+  width:100%;
+  margin:6px 0;
+}
+.role-select{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin:14px 0;}
+.role-btn{
+  flex:1; min-width:140px;
+  background:var(--wood);
+  color:var(--cream);
+  border:2px solid var(--copper);
+  border-radius:10px;
+  padding:14px;
+  cursor:pointer;
+  font-family:inherit;
+  font-size:1em;
+}
+.role-btn.active{background:var(--emerald); border-color:var(--gold);}
+.hidden{display:none !important;}
+.badge{
+  display:inline-block;
+  background:var(--wood);
+  color:var(--cream);
+  padding:4px 10px;
+  border-radius:20px;
+  font-size:.85em;
+  margin-bottom:10px;
+}
+.timer-box{
+  text-align:center;
+  background:var(--wood-dark);
+  color:var(--gold);
+  border-radius:10px;
+  padding:14px;
+  margin:14px 0;
+}
+.timer-display{font-size:2em; font-weight:bold; letter-spacing:2px;}
+.lock-slots{display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin:16px 0;}
+.lock-slot{
+  border:4px solid;
+  border-radius:10px;
+  width:80px; height:90px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  background:#fff8ec;
+}
+.lock-slot .emoji{font-size:2em;}
+.lock-slot .cname{font-size:.75em; font-weight:bold; margin-top:2px;}
+.digit-inputs{display:flex; gap:8px; justify-content:center; margin:14px 0;}
+.digit-inputs input{
+  width:50px; height:56px; text-align:center; font-size:1.6em; padding:0;
+}
+table{width:100%; border-collapse:collapse; margin:10px 0;}
+table th, table td{border:1px solid var(--wood); padding:8px; text-align:left;}
+table th{background:var(--emerald); color:var(--cream);}
+.dish-buttons{display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin:14px 0;}
+.dish-btn{
+  background:#fff8ec; border:2px solid var(--copper); border-radius:10px;
+  padding:12px 10px; cursor:pointer; font-family:inherit; font-size:.95em; min-width:100px;
+}
+.dish-btn:disabled{opacity:.35; cursor:not-allowed;}
+.sequence-display{
+  min-height:40px; background:var(--wood-dark); color:var(--gold); border-radius:8px;
+  padding:10px; margin:10px 0; text-align:center; font-size:1.1em;
+}
+.clue-box{
+  background:#fff8ec; border-left:5px solid var(--emerald); padding:10px 14px; margin:8px 0; border-radius:6px;
+}
+select{font-family:inherit; padding:8px; border-radius:6px; border:2px solid var(--wood); font-size:1em;}
+.slot-grid{display:flex; gap:6px; justify-content:center; flex-wrap:wrap; margin:14px 0;}
+.slot-col{display:flex; flex-direction:column; align-items:center; gap:4px;}
+.slot-col select{width:70px;}
+.icon-cell{
+  width:44px; height:44px; border:2px solid var(--wood); border-radius:8px;
+  display:flex; align-items:center; justify-content:center; font-size:1.4em; background:#fff8ec;
+}
+.icon-cell.empty{background:#e9e0cc; color:#bbb;}
+.hint-panel{margin-top:14px; padding-top:10px; border-top:2px dashed var(--wood);}
+.hint-text{background:#fff3d6; border:1px dashed var(--copper); padding:8px 12px; border-radius:6px; margin:6px 0;}
+.solution-panel{background:#ffe6e6; border:2px solid #c0392b; border-radius:8px; padding:10px 14px; margin-top:10px;}
+.feedback{margin:10px 0; padding:10px; border-radius:8px; font-weight:bold;}
+.feedback.ok{background:#d9f2e6; color:var(--emerald); border:2px solid var(--emerald);}
+.feedback.bad{background:#fbe0e0; color:#a12; border:2px solid #a12;}
+.note{font-size:.9em; color:var(--wood); font-style:italic;}
+.top-bar{text-align:center; font-size:.8em; color:var(--copper-light); margin-bottom:6px;}
+.top-bar a{color:var(--gold); cursor:pointer; text-decoration:underline;}
+textarea{width:100%; min-height:90px; font-family:inherit; padding:10px; border-radius:6px; border:2px solid var(--wood); font-size:1em;}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="top-bar hidden" id="topbar"></div>
+
+  <section class="screen" id="screen-setup">
+    <div class="card">
+      <h1>🪞 La Noche del Espejo</h1>
+      <p class="subtitle">Escape room a distancia para dos</p>
+      <p>Antes de arrancar, elijan el mismo <b>código de la noche</b> en los dos dispositivos (cualquier palabra, la que quieran) y cada uno su rol.</p>
+      <label>Código de la noche</label>
+      <input type="text" id="input-code" placeholder="ej: FERNET, ESMERALDA, lo que quieran...">
+      <div class="role-select">
+        <button class="role-btn" id="role-marido" onclick="selectRole('marido')">🤵 Falso Marido</button>
+        <button class="role-btn" id="role-esposa" onclick="selectRole('esposa')">👰 Falsa Esposa</button>
+      </div>
+      <p class="note">Importante: NO se muestren la pantalla en ningún momento. Todo se resuelve hablando.</p>
+      <button class="btn gold" onclick="goStory()">Continuar →</button>
+    </div>
+  </section>
+
+  <section class="screen hidden" id="screen-story">
+    <div class="card">
+      <h1>🪞 La Noche del Espejo</h1>
+      <p>Todo empezó la noche que se conocieron, con una propuesta de casamiento completamente inventada — y dos meses y medio después, una falsa boda para sellarla como corresponde. Desde entonces llevan anillos (él, en la mano derecha, el único que usa) y de vez en cuando se escriben mensajes que suenan casi demasiado en serio.</p>
+      <p>Esta noche, revisando cosas viejas, encontraron un espejo que ninguno de los dos recuerda haber comprado. Apenas lo miraron juntos, la imagen se partió al medio — y cada uno quedó de un lado distinto, viendo solo la mitad de lo que pasa.</p>
+      <p>Para volver a estar del mismo lado (literal y en todo sentido) van a tener que cruzar <b>4 reflejos</b> de esta relación tan de ustedes: lo que brindan, lo que cocinan, lo que escuchan, y lo que realmente ven cuando se miran. Todo justo cuando falta poco para cruzar juntos otra frontera bastante más real.</p>
+      <p class="note">Reglas: no se muestren la pantalla, hablen todo en voz alta. Cada sala tiene un cronómetro sugerido, pero no hace falta ganarle — alcanza con divertirse en el intento. Si se traban, hay pistas y también la posibilidad de ver la solución.</p>
+      <button class="btn gold" onclick="goRoom(1)">Entrar al primer reflejo →</button>
+    </div>
+  </section>
+
+  <section class="screen hidden" id="screen-room1"></section>
+  <section class="screen hidden" id="screen-room2"></section>
+  <section class="screen hidden" id="screen-room3"></section>
+  <section class="screen hidden" id="screen-room4"></section>
+
+  <section class="screen hidden" id="screen-final">
+    <div class="card">
+      <h1>🪞 El espejo vuelve a ser uno solo</h1>
+      <p>Lo lograron. Los dos lados del espejo se juntan de nuevo, y por un segundo se ven completos: brindis, cocina, música y reflejo, todo lo que ya sabían de memoria pero ahora lo resolvieron juntos, en voz alta, sin poder hacer trampa.</p>
+      <div class="clue-box">
+        <p><b>📝 Espacio para el mensaje final</b><br>
+        <span id="final-message">ESCRIBÍ ACÁ TU MENSAJE ANTES DE JUGAR (buscá la constante MENSAJE_FINAL en el código, cerca del principio del &lt;script&gt;, y reemplazá el texto).</span></p>
+      </div>
+      <button class="btn wood" onclick="resetAll()">Reiniciar todo</button>
+    </div>
+  </section>
+</div>
+
+<script>
+const MENSAJE_FINAL = "";
+
+function mulberry32(a){
+  return function(){
+    a|=0; a=a+0x6D2B79F5|0;
+    let t=Math.imul(a^a>>>15,1|a);
+    t=t+Math.imul(t^t>>>7,61|t)^t;
+    return ((t^t>>>14)>>>0)/4294967296;
+  };
+}
+function hashCode(str){
+  let h=0;
+  for(let i=0;i<str.length;i++){ h=Math.imul(31,h)+str.charCodeAt(i)|0; }
+  return h>>>0;
+}
+
+let state = { code: localStorage.getItem('ndlr_code')||'', role: localStorage.getItem('ndlr_role')||'', progress: parseInt(localStorage.getItem('ndlr_progress')||'0') };
+let timers = {};
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+  window.scrollTo(0,0);
+}
+function updateTopBar(){
+  const bar=document.getElementById('topbar');
+  if(state.role && state.code){
+    bar.classList.remove('hidden');
+    bar.innerHTML = `Código: <b>${state.code}</b> · Rol: <b>${state.role==='marido'?'Falso Marido':'Falsa Esposa'}</b> · <a onclick="resetAll()">cambiar</a>`;
+  } else {
+    bar.classList.add('hidden');
+  }
+}
+function resetAll(){
+  localStorage.removeItem('ndlr_code');
+  localStorage.removeItem('ndlr_role');
+  localStorage.removeItem('ndlr_progress');
+  state = {code:'', role:'', progress:0};
+  document.getElementById('input-code').value='';
+  document.getElementById('role-marido').classList.remove('active');
+  document.getElementById('role-esposa').classList.remove('active');
+  updateTopBar();
+  showScreen('screen-setup');
+}
+function selectRole(r){
+  state.role=r;
+  document.getElementById('role-marido').classList.toggle('active', r==='marido');
+  document.getElementById('role-esposa').classList.toggle('active', r==='esposa');
+}
+function goStory(){
+  const codeInput = document.getElementById('input-code').value.trim();
+  if(!codeInput){ alert('Ingresá un código de la noche (el mismo en los dos dispositivos).'); return; }
+  if(!state.role){ alert('Elegí tu rol.'); return; }
+  state.code = codeInput;
+  localStorage.setItem('ndlr_code', state.code);
+  localStorage.setItem('ndlr_role', state.role);
+  updateTopBar();
+  showScreen('screen-story');
+}
+function goRoom(n){
+  state.progress = n-1;
+  localStorage.setItem('ndlr_progress', state.progress);
+  ROOM_RENDER[n]();
+  showScreen('screen-room'+n);
+}
+function finishRoom(n){
+  state.progress = n;
+  localStorage.setItem('ndlr_progress', state.progress);
+}
+
+function fmtTime(sec){
+  const m=Math.floor(sec/60), s=sec%60;
+  return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+}
+function startTimer(key, minutes, displayId, expireMsgId){
+  clearInterval(timers[key]);
+  let sec = minutes*60;
+  const disp = document.getElementById(displayId);
+  disp.textContent = fmtTime(sec);
+  timers[key] = setInterval(()=>{
+    sec--;
+    if(sec<0){
+      clearInterval(timers[key]);
+      const em = document.getElementById(expireMsgId);
+      if(em) em.classList.remove('hidden');
+      return;
+    }
+    disp.textContent = fmtTime(sec);
+  },1000);
+}
+
+function generateRoom1(code){
+  const rng = mulberry32(hashCode(code+'-room1'));
+  const drinks=[{name:'Fernet',emoji:'🥃'},{name:'Vino',emoji:'🍷'},{name:'Vermú',emoji:'🥂'},{name:'Birra',emoji:'🍺'}];
+  const colors=[{name:'Esmeralda',hex:'#1c9c74'},{name:'Cobre',hex:'#c9752b'},{name:'Amarillo',hex:'#e8b923'},{name:'Madera',hex:'#7b4b2a'}];
+  const pick4=()=>Math.floor(rng()*4);
+  let slots=[], solution='';
+  for(let i=0;i<4;i++){ const d=pick4(), c=pick4(); slots.push({d,c}); solution += String((d*4+c)%10); }
+  let comboSet = new Set();
+  let rows = [];
+  slots.forEach(s=>{
+    const key = s.d+'-'+s.c;
+    if(!comboSet.has(key)){ comboSet.add(key); rows.push({d:s.d,c:s.c,digit:(s.d*4+s.c)%10}); }
+  });
+  while(rows.length<8){
+    const d=pick4(), c=pick4(), key=d+'-'+c;
+    if(!comboSet.has(key)){ comboSet.add(key); rows.push({d,c,digit:(d*4+c)%10}); }
+  }
+  for(let i=rows.length-1;i>0;i--){ const j=Math.floor(rng()*(i+1)); [rows[i],rows[j]]=[rows[j],rows[i]]; }
+  return {slots, solution, rows, drinks, colors};
+}
+
+function generateRoom4(code){
+  const rng = mulberry32(hashCode(code+'-room4'));
+  const icons=['🐱','💍','✈️','📷','❤️'];
+  let positions=[0,1,2,3,4,5,6];
+  for(let i=positions.length-1;i>0;i--){ const j=Math.floor(rng()*(i+1)); [positions[i],positions[j]]=[positions[j],positions[i]]; }
+  let chosen = positions.slice(0,4).sort((a,b)=>a-b);
+  let brokenIcons = chosen.map(()=> icons[Math.floor(rng()*icons.length)]);
+  const mirror = i => 6-i;
+  let target = Array(7).fill(null);
+  chosen.forEach((pos,idx)=>{ target[mirror(pos)] = brokenIcons[idx]; });
+  return {chosen, brokenIcons, target, icons, mirror};
+}
+
+const ROOM_RENDER = {
+  1: renderRoom1,
+  2: renderRoom2,
+  3: renderRoom3,
+  4: renderRoom4
+};
+
+function renderRoom1(){
+  const data = generateRoom1(state.code);
+  const isTerminal = state.role==='esposa';
+  let html = `<div class="card">
+    <span class="badge">Sala 1 de 4 · sugerido 10 min</span>
+    <h2>🍹 La Barra de los Brindis</h2>
+    <p class="subtitle">Fernet, vino, vermú, birra: todo lo que se toman charlando de la vida.</p>
+    <div class="timer-box">
+      <div class="timer-display" id="r1-timer">10:00</div>
+      <button class="btn copper" onclick="startTimer('r1',10,'r1-timer','r1-expire')">Iniciar cronómetro</button>
+      <p class="hidden" id="r1-expire" style="color:#ffb3b3;">Se acabó el tiempo sugerido — sigan si quieren, no hay apuro.</p>
+    </div>
+    <p class="note">Recuerden: no se muestren la pantalla, solo hablen.</p>`;
+
+  if(isTerminal){
+    html += `<p>Ante ustedes, una cerradura de 4 símbolos. Cada uno combina una bebida con un color de borde. Describíselo a tu pareja, que tiene la tabla para traducir cada combinación a un número.</p>
+    <div class="lock-slots">`;
+    data.slots.forEach((s,i)=>{
+      const d=data.drinks[s.d], c=data.colors[s.c];
+      html += `<div class="lock-slot" style="border-color:${c.hex}"><div class="emoji">${d.emoji}</div><div class="cname">${d.name}<br>${c.name}</div></div>`;
+    });
+    html += `</div>
+    <div class="digit-inputs">
+      ${[0,1,2,3].map(i=>`<input type="text" maxlength="1" id="r1-d${i}">`).join('')}
+    </div>
+    <button class="btn gold" onclick="checkRoom1('${data.solution}')">Verificar código</button>
+    <div id="r1-feedback"></div>`;
+  } else {
+    html += `<p>Tenés el manual de la barra. Tu pareja ve una cerradura con símbolos (bebida + color de borde) pero no sabe a qué número corresponden. Buscá cada combinación exacta en esta tabla y decíselo.</p>
+    <table><tr><th>Bebida</th><th>Color de borde</th><th>Dígito</th></tr>
+    ${data.rows.map(r=>`<tr><td>${data.drinks[r.d].emoji} ${data.drinks[r.d].name}</td><td style="color:${data.colors[r.c].hex}; font-weight:bold;">${data.colors[r.c].name}</td><td>${r.digit}</td></tr>`).join('')}
+    </table>`;
+  }
+
+  html += roomHintsHtml(1, [
+    'Pista 1: para cada símbolo hace falta describir bebida Y color, no alcanza con uno solo.',
+    'Pista 2: el primer dígito del código es <b>'+data.solution[0]+'</b>.'
+  ], 'El código completo es: <b>'+data.solution+'</b>');
+
+  html += `<button class="btn wood" onclick="goRoom(2)">Saltar a la sala 2 →</button></div>`;
+  document.getElementById('screen-room1').innerHTML = html;
+}
+function checkRoom1(solution){
+  const val = [0,1,2,3].map(i=>document.getElementById('r1-d'+i).value).join('');
+  const fb = document.getElementById('r1-feedback');
+  if(val===solution){
+    fb.innerHTML = '<div class="feedback ok">¡Correcto! El primer reflejo se acomoda. 🥂</div><button class="btn gold" onclick="finishRoom(1); goRoom(2)">Continuar a la sala 2 →</button>';
+  } else {
+    fb.innerHTML = '<div class="feedback bad">Todavía no. Revisen bien cada símbolo (bebida + color exactos) y prueben de nuevo.</div>';
+  }
+}
+
+function renderRoom2(){
+  const dishes = [
+    {key:'T',name:'Tortilla de papas',emoji:'🥔'},
+    {key:'P',name:'Pastas rellenas',emoji:'🍝'},
+    {key:'Z',name:'Pizza',emoji:'🍕'},
+    {key:'E',name:'Ensalada',emoji:'🥗'},
+    {key:'F',name:'Postre (flan)',emoji:'🍮'}
+  ];
+  const solutionOrder = ['E','Z','P','T','F'];
+  const displayOrder = ['T','F','P','E','Z'];
+  const isTerminal = state.role==='marido';
+
+  let html = `<div class="card">
+    <span class="badge">Sala 2 de 4 · sugerido 12 min</span>
+    <h2>🍽️ La Cocina Compartida</h2>
+    <p class="subtitle">Tortilla de papas (que le sale increíble a él), pastas rellenas, pizza — y ella, vegetariana, poniendo el orden.</p>
+    <div class="timer-box">
+      <div class="timer-display" id="r2-timer">12:00</div>
+      <button class="btn copper" onclick="startTimer('r2',12,'r2-timer','r2-expire')">Iniciar cronómetro</button>
+      <p class="hidden" id="r2-expire" style="color:#ffb3b3;">Se acabó el tiempo sugerido — sigan si quieren.</p>
+    </div>
+    <p class="note">No se muestren la pantalla.</p>`;
+
+  if(isTerminal){
+    html += `<p>Hay que armar el menú de la noche en el orden correcto. Tu pareja tiene las pistas para deducirlo — escuchá y presioná los platos en el orden que te diga.</p>
+    <div class="dish-buttons">
+      ${displayOrder.map(k=>{const d=dishes.find(x=>x.key===k); return `<button class="dish-btn" id="r2-btn-${k}" onclick="pickDish2('${k}')">${d.emoji}<br>${d.name}</button>`;}).join('')}
+    </div>
+    <div class="sequence-display" id="r2-seq">(vacío)</div>
+    <button class="btn wood" onclick="undoDish2()">Deshacer último</button>
+    <button class="btn gold" onclick="checkRoom2('${solutionOrder.join('')}')">Verificar orden</button>
+    <div id="r2-feedback"></div>`;
+  } else {
+    html += `<p>Estas son las pistas del menú de la noche (tu pareja no las ve, tiene los platos para apretar en orden):</p>
+    <div class="clue-box">🍮 El postre siempre cierra la noche.</div>
+    <div class="clue-box">🥗 La ensalada abre la comida, antes que cualquier pasta.</div>
+    <div class="clue-box">🍕 La pizza se sirve antes que las pastas rellenas, pero no es lo primero de la noche.</div>
+    <div class="clue-box">🥔 La tortilla de papas va justo después de las pastas rellenas.</div>
+    <div class="clue-box">🥗🍕 Entre la ensalada y la pizza no hay ningún otro plato en el medio.</div>`;
+  }
+
+  html += roomHintsHtml(2, [
+    'Pista 1: el primer plato de la noche es la Ensalada.',
+    'Pista 2: van dos parejas pegadas — Ensalada+Pizza primero, después Pastas rellenas+Tortilla — y el Postre cierra todo.'
+  ], 'El orden correcto es: Ensalada → Pizza → Pastas rellenas → Tortilla de papas → Postre');
+
+  html += `<button class="btn wood" onclick="goRoom(3)">Saltar a la sala 3 →</button></div>`;
+  document.getElementById('screen-room2').innerHTML = html;
+  window.__r2seq = [];
+}
+function pickDish2(k){
+  window.__r2seq.push(k);
+  document.getElementById('r2-btn-'+k).disabled = true;
+  const dishes = {T:'🥔 Tortilla',P:'🍝 Pastas',Z:'🍕 Pizza',E:'🥗 Ensalada',F:'🍮 Postre'};
+  document.getElementById('r2-seq').textContent = window.__r2seq.map(x=>dishes[x]).join('  →  ') || '(vacío)';
+}
+function undoDish2(){
+  const last = window.__r2seq.pop();
+  if(last){ document.getElementById('r2-btn-'+last).disabled = false; }
+  const dishes = {T:'🥔 Tortilla',P:'🍝 Pastas',Z:'🍕 Pizza',E:'🥗 Ensalada',F:'🍮 Postre'};
+  document.getElementById('r2-seq').textContent = window.__r2seq.map(x=>dishes[x]).join('  →  ') || '(vacío)';
+}
+function checkRoom2(solution){
+  const fb = document.getElementById('r2-feedback');
+  const val = window.__r2seq.join('');
+  if(val===solution){
+    fb.innerHTML = '<div class="feedback ok">¡Perfecto, el menú de la noche quedó armado! 🍽️</div><button class="btn gold" onclick="finishRoom(2); goRoom(3)">Continuar a la sala 3 →</button>';
+  } else {
+    fb.innerHTML = '<div class="feedback bad">Ese orden todavía no cierra con las pistas. Reinicien la secuencia y prueben de nuevo.</div>';
+  }
+}
+
+function renderRoom3(){
+  const bands = ['The Strokes','Los Redondos','Arctic Monkeys','Bersuit'];
+  const target = ['The Strokes','Los Redondos','Arctic Monkeys','Bersuit'];
+  const isTerminal = state.role==='esposa';
+
+  let html = `<div class="card">
+    <span class="badge">Sala 3 de 4 · sugerido 12 min</span>
+    <h2>📻 La Rocola</h2>
+    <p class="subtitle">Rock nacional vs. internacional, toda la noche alternando.</p>
+    <div class="timer-box">
+      <div class="timer-display" id="r3-timer">12:00</div>
+      <button class="btn copper" onclick="startTimer('r3',12,'r3-timer','r3-expire')">Iniciar cronómetro</button>
+      <p class="hidden" id="r3-expire" style="color:#ffb3b3;">Se acabó el tiempo sugerido — sigan si quieren.</p>
+    </div>
+    <p class="note">Esta sala es distinta: los dos tienen pistas, y son distintas. Ninguno solo puede resolverla — hace falta juntar la información.</p>`;
+
+  if(isTerminal){
+    html += `<p>Tus pistas para armar el orden de la playlist (bandejas 1 a 4):</p>
+    <div class="clue-box">Los Redondos suena inmediatamente después de The Strokes.</div>
+    <div class="clue-box">Bersuit es el último tema de la noche.</div>
+    <p>Armá el orden acá (charlá con tu pareja, que tiene otras dos pistas):</p>
+    <div class="slot-grid">
+      ${[0,1,2,3].map(i=>`<div class="slot-col"><b>Bandeja ${i+1}</b><select id="r3-s${i}"><option value="">--</option>${bands.map(b=>`<option value="${b}">${b}</option>`).join('')}</select></div>`).join('')}
+    </div>
+    <button class="btn gold" onclick="checkRoom3()">Verificar orden</button>
+    <div id="r3-feedback"></div>`;
+  } else {
+    html += `<p>Tus pistas para armar el orden de la playlist (bandejas 1 a 4). Tu pareja tiene otras dos pistas y arma el orden en su pantalla:</p>
+    <div class="clue-box">Arctic Monkeys no es ni el primer ni el último tema.</div>
+    <div class="clue-box">The Strokes suena antes que Arctic Monkeys.</div>`;
+  }
+
+  html += roomHintsHtml(3, [
+    'Pista 1: Bersuit va en la bandeja 4 (esa la sabe solo tu pareja, ahora la sabés vos también).',
+    'Pista 2: The Strokes y Los Redondos van pegados, en ese orden, al principio.'
+  ], 'El orden correcto es: 1) The Strokes, 2) Los Redondos, 3) Arctic Monkeys, 4) Bersuit');
+
+  html += `<button class="btn wood" onclick="goRoom(4)">Saltar a la sala 4 →</button></div>`;
+  document.getElementById('screen-room3').innerHTML = html;
+}
+function checkRoom3(){
+  const target = ['The Strokes','Los Redondos','Arctic Monkeys','Bersuit'];
+  const val = [0,1,2,3].map(i=>document.getElementById('r3-s'+i).value);
+  const fb = document.getElementById('r3-feedback');
+  if(val.join('|')===target.join('|')){
+    fb.innerHTML = '<div class="feedback ok">¡Esa es la playlist correcta! 🎶</div><button class="btn gold" onclick="finishRoom(3); goRoom(4)">Continuar a la sala 4 →</button>';
+  } else {
+    fb.innerHTML = '<div class="feedback bad">Todavía no coincide. Vuelvan a compartir las 4 pistas en voz alta y prueben de nuevo.</div>';
+  }
+}
+
+function renderRoom4(){
+  const data = generateRoom4(state.code);
+  const isBroken = state.role==='esposa';
+
+  let html = `<div class="card">
+    <span class="badge">Sala 4 de 4 · sugerido 12 min</span>
+    <h2>🪞 El Espejo</h2>
+    <p class="subtitle">Lo que cada uno ve cuando mira al otro — y lo que hace falta para que el reflejo cierre.</p>
+    <div class="timer-box">
+      <div class="timer-display" id="r4-timer">12:00</div>
+      <button class="btn copper" onclick="startTimer('r4',12,'r4-timer','r4-expire')">Iniciar cronómetro</button>
+      <p class="hidden" id="r4-expire" style="color:#ffb3b3;">Se acabó el tiempo sugerido — sigan si quieren.</p>
+    </div>
+    <p class="note">No se muestren la pantalla. Piensen en una fila de 7 posiciones, de la 1 a la 7.</p>`;
+
+  if(isBroken){
+    html += `<p>Este es tu lado, el roto: una fila de 7 espacios donde algunos símbolos aparecieron sueltos. Describíle a tu pareja, posición por posición (de la 1 a la 7), qué símbolo hay y dónde.</p>
+    <div class="icon-cell" style="display:none"></div>
+    <div class="slot-grid">
+      ${[0,1,2,3,4,5,6].map(i=>{
+        const idx = data.chosen.indexOf(i);
+        const content = idx>=0 ? data.brokenIcons[idx] : '';
+        return `<div class="slot-col"><div class="icon-cell ${content?'':'empty'}">${content||'·'}</div><span>${i+1}</span></div>`;
+      }).join('')}
+    </div>
+    <p>Iconos posibles: 🐱 gato · 💍 anillo · ✈️ viaje · 📷 reflejo · ❤️ corazón</p>`;
+  } else {
+    html += `<p>Este es tu lado, el sano. Para arreglar el espejo, cada símbolo del lado roto tiene que aparecer del tuyo, mirroreado: la posición 1 se refleja en la 7, la 2 en la 6, la 3 en la 5, y la 4 es el centro (se queda en el centro). Escuchá a tu pareja y completá.</p>
+    <div class="slot-grid">
+      ${[0,1,2,3,4,5,6].map(i=>`<div class="slot-col"><select id="r4-s${i}"><option value="">·</option><option value="🐱">🐱 gato</option><option value="💍">💍 anillo</option><option value="✈️">✈️ viaje</option><option value="📷">📷 reflejo</option><option value="❤️">❤️ corazón</option></select><span>${i+1}</span></div>`).join('')}
+    </div>
+    <button class="btn gold" onclick='checkRoom4(${JSON.stringify(data.target)})'>Verificar espejo</button>
+    <div id="r4-feedback"></div>`;
+  }
+
+  html += roomHintsHtml(4, [
+    'Pista 1: la posición 4 es el centro del espejo — lo que haya ahí (o no haya) se queda igual, no se mueve.',
+    'Pista 2: la regla completa es 1↔7, 2↔6, 3↔5, 4↔4. Sumen los números de cada par: siempre da 8 (menos el centro).'
+  ], 'El lado sano completo, posición por posición: ' + data.target.map((x,i)=>`${i+1}:${x||'vacío'}`).join(' · '));
+
+  html += `<button class="btn wood" onclick="goFinal()">Saltar al cierre →</button></div>`;
+  document.getElementById('screen-room4').innerHTML = html;
+}
+function checkRoom4(target){
+  const val = [0,1,2,3,4,5,6].map(i=>document.getElementById('r4-s'+i).value || null);
+  const fb = document.getElementById('r4-feedback');
+  const ok = val.every((v,i)=> (v||null) === (target[i]||null));
+  if(ok){
+    fb.innerHTML = '<div class="feedback ok">El espejo vuelve a ser uno solo. 🪞✨</div><button class="btn gold" onclick="finishRoom(4); goFinal()">Ir al cierre →</button>';
+  } else {
+    fb.innerHTML = '<div class="feedback bad">Todavía hay algo desalineado. Repasen posición por posición desde la 1.</div>';
+  }
+}
+function goFinal(){
+  document.getElementById('final-message').textContent = MENSAJE_FINAL && MENSAJE_FINAL.trim()
+    ? MENSAJE_FINAL
+    : 'ESCRIBÍ ACÁ TU MENSAJE ANTES DE JUGAR (buscá la constante MENSAJE_FINAL cerca del principio del <script>, y reemplazá el texto entre comillas).';
+  showScreen('screen-final');
+}
+
+function roomHintsHtml(n, hints, solutionText){
+  return `<div class="hint-panel">
+    <button class="btn copper" onclick="revealHint(${n},1)">💡 Pista 1</button>
+    <button class="btn copper" onclick="revealHint(${n},2)">💡 Pista 2</button>
+    <button class="btn wood" onclick="revealSolution(${n})">🔓 Ver solución</button>
+    <div id="hint1-${n}" class="hidden hint-text">${hints[0]}</div>
+    <div id="hint2-${n}" class="hidden hint-text">${hints[1]}</div>
+    <div id="solution-${n}" class="hidden solution-panel">${solutionText}</div>
+  </div>`;
+}
+function revealHint(n, i){ document.getElementById('hint'+i+'-'+n).classList.remove('hidden'); }
+function revealSolution(n){
+  if(confirm('¿Seguro? Esto te va a mostrar la respuesta de la sala.')){
+    document.getElementById('solution-'+n).classList.remove('hidden');
+  }
+}
+
+(function init(){
+  if(state.role){
+    document.getElementById('role-'+state.role).classList.add('active');
+  }
+  if(state.code){ document.getElementById('input-code').value = state.code; }
+  updateTopBar();
+  if(state.code && state.role && state.progress>0 && state.progress<4){
+    ROOM_RENDER[state.progress+1]();
+    showScreen('screen-room'+(state.progress+1));
+  } else if(state.code && state.role && state.progress>=4){
+    goFinal();
+  } else if(state.code && state.role){
+    showScreen('screen-story');
+  } else {
+    showScreen('screen-setup');
+  }
+})();
+</script>
+</body>
+</html>
