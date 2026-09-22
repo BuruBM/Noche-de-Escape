@@ -152,9 +152,10 @@ table td{padding:8px; border-bottom:1px solid var(--border); color:var(--text);}
 .window-slot{display:flex; flex-direction:column; align-items:center; gap:6px; min-width:58px;}
 .window-slot .idx{font-size:.68em; color:var(--text-dim);}
 .constellation{display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin:16px 0;}
-.const-cell{background:var(--surface-2); border:1px solid var(--border); border-radius:9px; padding:6px; display:flex; flex-direction:column; align-items:center; gap:4px; min-height:74px; justify-content:center;}
+.const-cell{background:var(--surface-2); border:1px solid var(--border); border-radius:9px; padding:6px; display:flex; flex-direction:column; align-items:center; gap:3px; min-height:86px; justify-content:center;}
 .const-cell.given{border-color:var(--gold); background:var(--gold-dim);}
-.const-cell select{width:100%; font-size:.72em; padding:4px;}
+.const-cell select{width:100%; font-size:.68em; padding:3px;}
+.int-label{font-size:.62em; text-transform:uppercase; letter-spacing:.5px; color:#7a6a52;}
 .hint-panel{margin-top:16px; padding-top:12px; border-top:1px solid var(--border);}
 .hint-text{background:var(--surface-2); border-left:3px solid var(--gold); padding:9px 12px; border-radius:6px; margin:6px 0; font-size:.9em;}
 .solution-panel{background:var(--surface-2); border:1px solid var(--danger); border-radius:8px; padding:10px 14px; margin-top:10px; font-size:.88em;}
@@ -218,6 +219,7 @@ const COLOR_HEX = { esmeralda:'#31a878', cobre:'#d1823f', amarillo:'#e0b654', ma
 const COLOR_NAMES = ['esmeralda','cobre','amarillo','madera'];
 const WINDOW_ICONS = ['💧','✈️','📸','✨','🌙'];
 const CONST_ICONS = ['🐱','✈️','🍷','📸','🎵','📖','🧳','❤️'];
+const INTENSITY = ['tenue','media','intensa'];
 
 function mulberry32(a){
   return function(){
@@ -348,11 +350,11 @@ function generateRoom4(code){
 function generateRoom5(code){
   const rngGrid = mulberry32(hashCode(code+'-room5-grid'));
   let full = [];
-  for(let i=0;i<16;i++){ full.push({icon: Math.floor(rngGrid()*8), color: Math.floor(rngGrid()*4)}); }
+  for(let i=0;i<20;i++){ full.push({icon: Math.floor(rngGrid()*8), color: Math.floor(rngGrid()*4), intensity: Math.floor(rngGrid()*3)}); }
   const rngSplit = mulberry32(hashCode(code+'-room5-split'));
-  let idxs=[...Array(16).keys()];
+  let idxs=[...Array(20).keys()];
   for(let i=idxs.length-1;i>0;i--){ const j=Math.floor(rngSplit()*(i+1)); [idxs[i],idxs[j]]=[idxs[j],idxs[i]]; }
-  const ownerA = new Set(idxs.slice(0,8));
+  const ownerA = new Set(idxs.slice(0,10));
   return {full, ownerA};
 }
 
@@ -503,33 +505,36 @@ function checkRoom2(solution){
 }
 
 function renderRoom3(){
-  const bandNames = {S:'The Strokes', R:'Los Redondos', A:'Arctic Monkeys', U:'Sumo'};
-  const bandKeys = ['S','R','A','U'];
+  const bandNames = {S:'The Strokes', R:'Los Redondos', A:'Arctic Monkeys', U:'Sumo', D:'Divididos', T:'Tame Impala'};
+  const bandKeys = ['S','R','A','U','D','T'];
   const armaRole = 'esposa';
   const isTerminal = state.role===armaRole;
 
   let html = `<div class="card acc-gold">
     <div class="kicker">🎶 Ronda 3 · La Bandeja</div>
-    <h2>Cuatro discos, cuatro colores, cuatro lugares</h2>
-    <p class="room-sub">Ninguno de los dos tiene todos los datos — hace falta juntar las pistas.</p>
+    <h2>Seis vinilos, cuatro colores que se repiten, seis lugares</h2>
+    <p class="room-sub">Ninguno de los dos tiene todos los datos, y esta vez el color no alcanza para distinguir un vinilo del otro — puede haber dos con el mismo.</p>
     ${roleBanner(armaRole)}
     <div class="timer-box">
       <div class="timer-label">⏳ tiempo sugerido</div>
-      <div class="timer-display" id="r3-timer">11:00</div>
-      <button class="btn accent" onclick="startTimer('r3',11,'r3-timer','r3-expire')">Iniciar cronómetro</button>
+      <div class="timer-display" id="r3-timer">15:00</div>
+      <button class="btn accent" onclick="startTimer('r3',15,'r3-timer','r3-expire')">Iniciar cronómetro</button>
       <p class="hidden note" id="r3-expire">Se acabó el tiempo sugerido — sigan si quieren.</p>
     </div>`;
 
   if(isTerminal){
     html += `<p>Tus pistas:</p>
     <div class="light-panel">
-    <div class="clue-box">🎧 Los Redondos cierran la noche.</div>
-    <div class="clue-box">🎧 El vinilo de Los Redondos es cobre.</div>
-    <div class="clue-box">🎧 Arctic Monkeys no suena ni segundo ni último.</div>
-    <div class="clue-box">🎧 Sumo no tiene ni el vinilo cobre ni el amarillo.</div>
-    <p>Armá acá el orden y el color de cada bandeja (tu pareja tiene otras cuatro pistas, distintas):</p>
+    <div class="clue-box">🎧 Los Redondos cierran la noche (bandeja 6).</div>
+    <div class="clue-box">🎧 El vinilo de Los Redondos es del mismo color que el de Arctic Monkeys.</div>
+    <div class="clue-box">🎧 Divididos abre la noche (bandeja 1).</div>
+    <div class="clue-box">🎧 Sumo no suena ni primero, ni segundo, ni último.</div>
+    <div class="clue-box">🎧 El vinilo esmeralda aparece en exactamente dos bandejas.</div>
+    <div class="clue-box">🎧 Tame Impala no tiene ni el vinilo cobre ni el amarillo.</div>
+    <div class="clue-box">🎧 El vinilo de Sumo es esmeralda.</div>
+    <p>Armá acá el orden y el color de cada bandeja (tu pareja tiene otras seis pistas, distintas):</p>
     <div class="slot-grid">
-      ${[0,1,2,3].map(i=>`<div class="grid-slot">
+      ${[0,1,2,3,4,5].map(i=>`<div class="grid-slot">
         <label>💿 Bandeja ${i+1}</label>
         <select id="r3-band${i}"><option value="">banda</option>${bandKeys.map(k=>`<option value="${k}">${bandNames[k]}</option>`).join('')}</select>
         <select id="r3-color${i}"><option value="">color</option>${COLOR_NAMES.map((c,ci)=>`<option value="${ci}">${c}</option>`).join('')}</select>
@@ -538,35 +543,37 @@ function renderRoom3(){
     <button class="btn primary" onclick="checkRoom3()">Verificar bandeja</button>
     <div id="r3-feedback"></div></div>`;
   } else {
-    html += `<p>Tus pistas (tu pareja tiene otras cuatro, distintas, y arma el orden completo en su pantalla):</p>
+    html += `<p>Tus pistas (tu pareja tiene otras siete, distintas, y arma el orden completo en su pantalla):</p>
     <div class="light-panel">
-    <div class="clue-box copper">🎸 El vinilo esmeralda no está ni primero ni último.</div>
+    <div class="clue-box copper">🎸 Arctic Monkeys suena antes que Tame Impala, pero no inmediatamente antes.</div>
     <div class="clue-box copper">🎸 The Strokes suena inmediatamente después de Arctic Monkeys.</div>
-    <div class="clue-box copper">🎸 Sumo no tiene el vinilo madera.</div>
-    <div class="clue-box copper">🎸 Arctic Monkeys no tiene el vinilo amarillo.</div>
+    <div class="clue-box copper">🎸 Sumo suena inmediatamente después de Tame Impala.</div>
+    <div class="clue-box copper">🎸 El vinilo de Divididos es madera.</div>
+    <div class="clue-box copper">🎸 El vinilo de The Strokes es amarillo.</div>
+    <div class="clue-box copper">🎸 El vinilo de Arctic Monkeys no es ni amarillo ni madera.</div>
     </div>`;
   }
 
   html += roomHintsHtml(3, [
-    'Ninguna pista dice una posición o un color de forma directa salvo la de Los Redondos — todo lo demás sale de cruzar negaciones. Anoten en un papel las 4 bandejas y vayan tachando bandas y colores imposibles en cada una.',
-    'Sumo no puede tener cobre, amarillo ni madera — así que ya sabés su color sin que nadie te lo diga. Con eso y The Strokes pegado justo después de Arctic Monkeys, quedan muy pocas combinaciones posibles para probar.'
-  ], 'Bandeja 1: Arctic Monkeys (madera) · Bandeja 2: The Strokes (amarillo) · Bandeja 3: Sumo (esmeralda) · Bandeja 4: Los Redondos (cobre)');
+    'Anoten las 6 bandejas en un papel. Con las dos pistas de "abre"/"cierra" ya tienen las bandejas 1 y 6 (Divididos y Los Redondos). Las otras cuatro bandas se acomodan solas si arman las dos parejas "inmediatamente después" que aparecen en las pistas — juntas ocupan las cuatro bandejas del medio, y solo hay un orden posible entre esas dos parejas.',
+    'Para los colores: Sumo, Divididos y The Strokes tienen su color dicho de forma directa en alguna de las pistas. Con eso, más el dato de que el esmeralda aparece exactamente dos veces, y que el de Los Redondos coincide con el de Arctic Monkeys, quedan muy pocas combinaciones para las dos bandejas que faltan.'
+  ], 'Bandeja 1: Divididos (madera) · Bandeja 2: Arctic Monkeys (cobre) · Bandeja 3: The Strokes (amarillo) · Bandeja 4: Tame Impala (esmeralda) · Bandeja 5: Sumo (esmeralda) · Bandeja 6: Los Redondos (cobre)');
 
   html += `<button class="btn ghost" onclick="goRoom(4)">Saltar a la ronda 4</button></div>`;
   document.getElementById('screen-room3').innerHTML = html;
 }
 function checkRoom3(){
-  const targetBand = ['A','S','U','R'];
-  const targetColor = [3,2,0,1];
-  const valBand = [0,1,2,3].map(i=>document.getElementById('r3-band'+i).value);
-  const valColor = [0,1,2,3].map(i=>document.getElementById('r3-color'+i).value);
+  const targetBand = ['D','A','S','T','U','R'];
+  const targetColor = [3,1,2,0,0,1];
+  const valBand = [0,1,2,3,4,5].map(i=>document.getElementById('r3-band'+i).value);
+  const valColor = [0,1,2,3,4,5].map(i=>document.getElementById('r3-color'+i).value);
   const fb = document.getElementById('r3-feedback');
   const bandOk = valBand.join('|')===targetBand.join('|');
   const colorOk = valColor.join('|')===targetColor.join('|');
   if(bandOk && colorOk){
     fb.innerHTML = '<div class="feedback ok">🎶 La bandeja quedó perfecta — turnándose, como siempre.</div><button class="btn primary" onclick="finishRoom(3); goRoom(4)">Continuar a la ronda 4</button>';
   } else {
-    fb.innerHTML = '<div class="feedback bad">Todavía no coincide del todo. Repasen las siete pistas en voz alta, banda por banda y color por color.</div>';
+    fb.innerHTML = '<div class="feedback bad">Todavía no coincide del todo. Repasen las trece pistas en voz alta, banda por banda y color por color.</div>';
   }
 }
 
@@ -641,42 +648,43 @@ function checkRoom4(target){
 function renderRoom5(){
   const data = generateRoom5(state.code);
   const iAmEsposa = state.role==='esposa';
-  const myGiven = iAmEsposa ? data.ownerA : new Set([...Array(16).keys()].filter(i=>!data.ownerA.has(i)));
+  const myGiven = iAmEsposa ? data.ownerA : new Set([...Array(20).keys()].filter(i=>!data.ownerA.has(i)));
   window.__r5_full = data.full;
   window.__r5_myGiven = myGiven;
 
   let html = `<div class="card acc-emerald">
     <div class="kicker">⭐ Ronda 5 · La Constelación</div>
-    <h2>Dieciséis estrellas, dos mitades del mismo cielo</h2>
+    <h2>Veinte estrellas, dos mitades del mismo cielo</h2>
     <p class="room-sub">Cada uno ve la mitad del cielo — pero no se ve igual desde los dos lugares. Solo se completa entera contándosela al otro y traduciendo el color.</p>
     ${symmetricBanner()}
     <div class="timer-box">
       <div class="timer-label">⏳ tiempo sugerido</div>
-      <div class="timer-display" id="r5-timer">10:00</div>
-      <button class="btn accent" onclick="startTimer('r5',10,'r5-timer','r5-expire')">Iniciar cronómetro</button>
+      <div class="timer-display" id="r5-timer">12:00</div>
+      <button class="btn accent" onclick="startTimer('r5',12,'r5-timer','r5-expire')">Iniciar cronómetro</button>
       <p class="hidden note" id="r5-expire">Se acabó el tiempo sugerido — sigan si quieren.</p>
     </div>
-    <p>Las casillas doradas son las tuyas: describilas tal cual las ves. Las claras son las que tenés que completar escuchando a tu pareja — pero el color que te digan no va tal cual: se corre un lugar en la rueda (esmeralda→cobre→amarillo→madera→esmeralda). El ícono sí es el mismo.</p>
+    <p>Las casillas doradas son las tuyas: describilas tal cual las ves — ícono, color e intensidad. Las claras son las que tenés que completar escuchando a tu pareja — pero el color que te digan no va tal cual: se corre un lugar en la rueda (esmeralda→cobre→amarillo→madera→esmeralda). El ícono y la intensidad sí van tal cual te los digan.</p>
     <div class="light-panel"><div class="constellation">
-      ${[...Array(16).keys()].map(i=>{
+      ${[...Array(20).keys()].map(i=>{
         if(myGiven.has(i)){
           const c = data.full[i];
-          return `<div class="const-cell given">${iconBadge(c.icon,c.color,34,CONST_ICONS)}</div>`;
+          return `<div class="const-cell given">${iconBadge(c.icon,c.color,34,CONST_ICONS)}<span class="int-label">${INTENSITY[c.intensity]}</span></div>`;
         }
         return `<div class="const-cell">
           <select id="r5-icon${i}"><option value="">—</option>${CONST_ICONS.map((e,ei)=>`<option value="${ei}">${e}</option>`).join('')}</select>
           <select id="r5-color${i}"><option value="">—</option>${COLOR_NAMES.map((c,ci)=>`<option value="${ci}">${c}</option>`).join('')}</select>
+          <select id="r5-int${i}"><option value="">—</option>${INTENSITY.map((n,ni)=>`<option value="${ni}">${n}</option>`).join('')}</select>
         </div>`;
       }).join('')}
     </div>
-    <p class="note">Íconos: 🐱 gato · ✈️ avión · 🍷 vino · 📸 cámara · 🎵 música · 📖 libro · 🧳 valija · ❤️ corazón.</p>
+    <p class="note">Íconos: 🐱 gato · ✈️ avión · 🍷 vino · 📸 cámara · 🎵 música · 📖 libro · 🧳 valija · ❤️ corazón. Intensidad: tenue, media o intensa.</p>
     <button class="btn primary" onclick="checkRoom5()">Verificar mi cielo</button>
     <div id="r5-feedback"></div></div>`;
 
   html += roomHintsHtml(5, [
-    'La rueda de colores es: esmeralda → cobre → amarillo → madera → esmeralda. Si tu pareja te dice "amarillo", vos ponés "madera" — el que sigue en la rueda, no el que te dijeron.',
-    'Empiecen por las esquinas y los bordes del tablero para no perderse de casilla, y digan siempre ícono y color juntos — nunca uno solo.'
-  ], 'Tu mitad de la constelación ya la tenés en pantalla, tal cual. La otra mitad se arma con lo que te cuenta tu pareja, pero corriendo el color un lugar en la rueda (esmeralda→cobre→amarillo→madera→esmeralda); el ícono no cambia.');
+    'La rueda de colores es: esmeralda → cobre → amarillo → madera → esmeralda. Si tu pareja te dice "amarillo", vos ponés "madera" — el que sigue en la rueda, no el que te dijeron. La intensidad y el ícono sí se copian tal cual.',
+    'Vayan casilla por casilla en orden (fila por fila) para no perderse con veinte casillas, y digan siempre los tres datos juntos: ícono, color e intensidad — nunca de a uno.'
+  ], 'Tu mitad de la constelación ya la tenés en pantalla, tal cual. La otra mitad se arma con lo que te cuenta tu pareja: ícono e intensidad tal cual, y el color corrido un lugar en la rueda (esmeralda→cobre→amarillo→madera→esmeralda).');
 
   html += `<button class="btn ghost" onclick="goFinal()">Saltar al cierre</button></div>`;
   document.getElementById('screen-room5').innerHTML = html;
@@ -684,12 +692,16 @@ function renderRoom5(){
 function checkRoom5(){
   const full = window.__r5_full, myGiven = window.__r5_myGiven;
   let ok = true;
-  for(let i=0;i<16;i++){
+  for(let i=0;i<20;i++){
     if(myGiven.has(i)) continue;
     const ic = document.getElementById('r5-icon'+i).value;
     const co = document.getElementById('r5-color'+i).value;
+    const iv = document.getElementById('r5-int'+i).value;
     const expectedColor = (full[i].color+1)%4;
-    if(ic==='' || co==='' || parseInt(ic)!==full[i].icon || parseInt(co)!==expectedColor){ ok=false; break; }
+    if(ic==='' || co==='' || iv===''
+      || parseInt(ic)!==full[i].icon
+      || parseInt(co)!==expectedColor
+      || parseInt(iv)!==full[i].intensity){ ok=false; break; }
   }
   const fb = document.getElementById('r5-feedback');
   if(ok){
