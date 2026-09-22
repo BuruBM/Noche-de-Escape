@@ -13,15 +13,18 @@
   --border-strong: rgba(255,255,255,0.24);
   --text:#f2ece1;
   --text-dim:#b7ab97;
-  --emerald:#31a878;
-  --emerald-dim: rgba(49,168,120,0.16);
-  --copper:#d1823f;
-  --copper-dim: rgba(209,130,63,0.16);
-  --gold:#e0b654;
-  --gold-dim: rgba(224,182,84,0.14);
-  --wood:#8a5c37;
-  --danger:#d1685a;
+  --emerald:#2ec98c;
+  --emerald-dim: rgba(46,201,140,0.18);
+  --copper:#e2913f;
+  --copper-dim: rgba(226,145,63,0.18);
+  --gold:#f0c766;
+  --gold-dim: rgba(240,199,102,0.16);
+  --wood:#a06f42;
+  --danger:#e07564;
+  --glow:#ffdd9e;
+  --glow-dim: rgba(255,221,158,0.22);
 }
+@keyframes pulseGlow{ 0%,100%{opacity:.6;} 50%{opacity:1;} }
 *{box-sizing:border-box;}
 body{
   margin:0; min-height:100vh; background:var(--bg-vignette); color:var(--text);
@@ -32,14 +35,17 @@ body{
 .card{
   background:var(--surface); border:1px solid var(--border); border-top:3px solid var(--gold);
   border-radius:12px; padding:26px 24px; margin-bottom:18px;
-  box-shadow:0 1px 2px rgba(0,0,0,.5), 0 14px 32px rgba(0,0,0,.4);
+  box-shadow:0 1px 2px rgba(0,0,0,.5), 0 14px 32px rgba(0,0,0,.4), 0 -22px 44px -28px var(--glow-dim);
 }
-.card.acc-copper{border-top-color:var(--copper);}
-.card.acc-emerald{border-top-color:var(--emerald);}
+.card.acc-copper{border-top-color:var(--copper); box-shadow:0 1px 2px rgba(0,0,0,.5), 0 14px 32px rgba(0,0,0,.4), 0 -22px 44px -28px var(--copper-dim);}
+.card.acc-emerald{border-top-color:var(--emerald); box-shadow:0 1px 2px rgba(0,0,0,.5), 0 14px 32px rgba(0,0,0,.4), 0 -22px 44px -28px var(--emerald-dim);}
 .card.acc-gold{border-top-color:var(--gold);}
 .card.acc-wood{border-top-color:var(--wood);}
-.kicker{text-transform:uppercase; letter-spacing:2.5px; font-size:.75em; font-weight:700; color:var(--gold); margin-bottom:6px;}
-.ornament{color:var(--gold); opacity:.55; letter-spacing:8px; font-size:.8em; margin:2px 0 10px;}
+.kicker{
+  text-transform:uppercase; letter-spacing:2.5px; font-size:.78em; font-weight:800; color:var(--glow);
+  margin-bottom:6px; text-shadow:0 0 16px rgba(255,221,158,.4);
+}
+.ornament{color:var(--glow); opacity:.7; letter-spacing:8px; font-size:.8em; margin:2px 0 10px; animation:pulseGlow 2.4s ease-in-out infinite;}
 .tagline{
   font-family:Georgia,"Iowan Old Style","Times New Roman",serif; font-style:italic;
   color:var(--text-dim); font-size:1.06em; margin:0 0 18px; line-height:1.55;
@@ -57,10 +63,10 @@ p{line-height:1.6; color:var(--text);}
   margin:5px 6px 5px 0; transition:background .15s, border-color .15s, transform .1s;
 }
 .btn:hover{background:rgba(255,255,255,.05); border-color:var(--text-dim); transform:translateY(-1px);}
-.btn.primary{background:var(--emerald); border-color:var(--emerald); color:#07160f; font-weight:700;}
-.btn.primary:hover{background:#3cbd8b;}
+.btn.primary{background:var(--emerald); border-color:var(--emerald); color:#07160f; font-weight:700; box-shadow:0 3px 14px var(--emerald-dim);}
+.btn.primary:hover{background:#4fe0a5; box-shadow:0 4px 18px var(--emerald-dim);}
 .btn.warm{background:var(--copper); border-color:var(--copper); color:#211006; font-weight:700;}
-.btn.warm:hover{background:#e29350;}
+.btn.warm:hover{background:#efa257;}
 .btn.accent{border-color:var(--gold); color:var(--gold);}
 .btn.accent:hover{background:var(--gold-dim);}
 .btn.ghost{border-color:transparent; color:var(--text-dim); text-decoration:underline; padding:6px 2px;}
@@ -91,9 +97,9 @@ select{
 }
 .role-banner.symmetric{justify-content:center; text-align:center;}
 .role-banner .me{color:var(--gold); font-weight:700;}
-.timer-box{text-align:center; background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:14px; margin:16px 0;}
+.timer-box{text-align:center; background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:14px; margin:16px 0; box-shadow:inset 0 0 24px -10px var(--glow-dim);}
 .timer-label{font-size:.7em; letter-spacing:2px; text-transform:uppercase; color:var(--text-dim); margin-bottom:4px;}
-.timer-display{font-size:1.9em; font-weight:700; letter-spacing:2px; color:var(--gold); font-variant-numeric:tabular-nums;}
+.timer-display{font-size:1.9em; font-weight:700; letter-spacing:2px; color:var(--glow); font-variant-numeric:tabular-nums; text-shadow:0 0 12px rgba(255,221,158,.45);}
 .symbol-grid{display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin:18px 0;}
 .symbol-card{border:1px solid var(--border-strong); border-radius:12px; padding:12px 10px; background:var(--surface-2); min-width:100px; text-align:center;}
 .symbol-card .emoji{font-size:1.7em;}
@@ -160,7 +166,7 @@ table td{padding:8px; border-bottom:1px solid var(--border); color:var(--text);}
     <div class="card">
       <div class="kicker">🔮 Punto de Fuga</div>
       <p>Esto empezó como empiezan sus cosas: en joda. Una noche cualquiera, mirando el vidrio empañado de una copa — o un charco después de la lluvia, o la pantalla del teléfono, vaya a saber — notaron que el reflejo tardaba un segundo de más en seguirlos. Como si del otro lado hubiera alguien completando el movimiento.</p>
-      <p>Le pusieron nombre esa misma noche, medio en serio medio no: <b>el Punto de Fuga</b>. Dijeron que si alguna vez el reflejo se atrasaba tanto que se separaba del todo, iban a tener que llamarlo de vuelta jugando — como ya sabían hacer con lo del casamiento falso, o con la mudanza que terminó siendo de verdad. Ustedes convierten cualquier chiste en ritual, tarde o temprano.</p>
+      <p>Le pusieron nombre esa misma noche, medio en serio medio no: <b>el Punto de Fuga</b>. Dijeron que si alguna vez el reflejo se atrasaba tanto que se separaba del todo, iban a tener que llamarlo de vuelta jugando — como ya sabían hacer con lo del casamiento falso. Ustedes convierten cualquier chiste en ritual, tarde o temprano.</p>
       <p>Bueno. Esta noche el reflejo se atrasó. Van cinco juegos para llamarlo de vuelta — hablando todo el tiempo, sin mostrarse la pantalla, como toca cuando el otro está lejos.</p>
       <p class="note">Cada ronda tiene un cronómetro sugerido — no hace falta ganarle. Si se traban, hay pistas y, si prefieren, la solución directamente.</p>
       <button class="btn primary" onclick="goRoom(1)">Empezar ✨</button>
