@@ -505,7 +505,7 @@ function checkRoom2(solution){
 }
 
 function renderRoom3(){
-  const bandNames = {S:'The Strokes', R:'Los Redondos', A:'Arctic Monkeys', U:'Sumo', D:'Divididos', T:'Tame Impala'};
+  const bandNames = {S:'The Strokes', R:'Los Redondos', A:'Arctic Monkeys', U:'Sumo', D:'Divididos', T:'The Beatles'};
   const bandKeys = ['S','R','A','U','D','T'];
   const armaRole = 'esposa';
   const isTerminal = state.role===armaRole;
@@ -530,7 +530,7 @@ function renderRoom3(){
     <div class="clue-box">🎧 Divididos abre la noche (bandeja 1).</div>
     <div class="clue-box">🎧 Sumo no suena ni primero, ni segundo, ni último.</div>
     <div class="clue-box">🎧 El vinilo esmeralda aparece en exactamente dos bandejas.</div>
-    <div class="clue-box">🎧 Tame Impala no tiene ni el vinilo cobre ni el amarillo.</div>
+    <div class="clue-box">🎧 The Beatles no tiene ni el vinilo cobre ni el amarillo.</div>
     <div class="clue-box">🎧 El vinilo de Sumo es esmeralda.</div>
     <p>Armá acá el orden y el color de cada bandeja (tu pareja tiene otras seis pistas, distintas):</p>
     <div class="slot-grid">
@@ -545,9 +545,9 @@ function renderRoom3(){
   } else {
     html += `<p>Tus pistas (tu pareja tiene otras siete, distintas, y arma el orden completo en su pantalla):</p>
     <div class="light-panel">
-    <div class="clue-box copper">🎸 Arctic Monkeys suena antes que Tame Impala, pero no inmediatamente antes.</div>
+    <div class="clue-box copper">🎸 Arctic Monkeys suena antes que The Beatles, pero no inmediatamente antes.</div>
     <div class="clue-box copper">🎸 The Strokes suena inmediatamente después de Arctic Monkeys.</div>
-    <div class="clue-box copper">🎸 Sumo suena inmediatamente después de Tame Impala.</div>
+    <div class="clue-box copper">🎸 Sumo suena inmediatamente después de The Beatles.</div>
     <div class="clue-box copper">🎸 El vinilo de Divididos es madera.</div>
     <div class="clue-box copper">🎸 El vinilo de The Strokes es amarillo.</div>
     <div class="clue-box copper">🎸 El vinilo de Arctic Monkeys no es ni amarillo ni madera.</div>
@@ -557,7 +557,7 @@ function renderRoom3(){
   html += roomHintsHtml(3, [
     'Anoten las 6 bandejas en un papel. Con las dos pistas de "abre"/"cierra" ya tienen las bandejas 1 y 6 (Divididos y Los Redondos). Las otras cuatro bandas se acomodan solas si arman las dos parejas "inmediatamente después" que aparecen en las pistas — juntas ocupan las cuatro bandejas del medio, y solo hay un orden posible entre esas dos parejas.',
     'Para los colores: Sumo, Divididos y The Strokes tienen su color dicho de forma directa en alguna de las pistas. Con eso, más el dato de que el esmeralda aparece exactamente dos veces, y que el de Los Redondos coincide con el de Arctic Monkeys, quedan muy pocas combinaciones para las dos bandejas que faltan.'
-  ], 'Bandeja 1: Divididos (madera) · Bandeja 2: Arctic Monkeys (cobre) · Bandeja 3: The Strokes (amarillo) · Bandeja 4: Tame Impala (esmeralda) · Bandeja 5: Sumo (esmeralda) · Bandeja 6: Los Redondos (cobre)');
+  ], 'Bandeja 1: Divididos (madera) · Bandeja 2: Arctic Monkeys (cobre) · Bandeja 3: The Strokes (amarillo) · Bandeja 4: The Beatles (esmeralda) · Bandeja 5: Sumo (esmeralda) · Bandeja 6: Los Redondos (cobre)');
 
   html += `<button class="btn ghost" onclick="goRoom(4)">Saltar a la ronda 4</button></div>`;
   document.getElementById('screen-room3').innerHTML = html;
